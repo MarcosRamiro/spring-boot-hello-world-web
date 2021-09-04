@@ -38,6 +38,9 @@ public class PDFController {
         byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
         ByteArrayResource resource = new ByteArrayResource(decoded);
 
+        if(!acao.equalsIgnoreCase("imprimir") && !acao.equalsIgnoreCase("download"))
+            return ResponseEntity.badRequest().build();
+
         String downloadImprimir = acao.equalsIgnoreCase("imprimir") ? "inline" : "attachment";
 
         return ResponseEntity.ok()
