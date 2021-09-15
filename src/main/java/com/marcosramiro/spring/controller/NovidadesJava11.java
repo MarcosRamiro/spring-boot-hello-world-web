@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -31,7 +35,7 @@ public class NovidadesJava11 {
             throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(1))
+                .connectTimeout(Duration.ofSeconds(3))
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .build();
 
@@ -47,4 +51,26 @@ public class NovidadesJava11 {
                 .status(response.statusCode())
                 .body(response.body());
     }
+
+    @GetMapping("/jersey/{path}/{id}")
+    public ResponseEntity<String> jersey(@PathVariable("path") String path, @PathVariable ("id") String id){
+
+        Client client = ClientBuilder.newClient();
+
+        WebTarget target = client.target("https://swapi.dev/api");
+
+        Response response = target
+                .path(path)
+                .path(id)
+                .request()
+                .header("Accept", "application/json")
+                .get();
+
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(response.readEntity(String.class));
+
+    }
+
+
 }
