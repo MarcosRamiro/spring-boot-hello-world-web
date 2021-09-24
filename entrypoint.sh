@@ -1,6 +1,7 @@
 #!/bin/sh
 
-JAVA_OPTS_IN=${JAVA_OPTS}
-JAVA_OPTS_IN="${JAVA_OPTS_IN} -Dserver.port=80 "
-
-exec java $JAVA_OPTS_IN -jar /app/app.jar
+JAVA_OPTS="-Dserver.port=${SERVER_PORT} \
+ -Dserver.servlet.context-path=/${SERVER_SERVLET_CONTEXT_PATH} \
+ -Daws.asg=${AWS_ASG} "
+echo $JAVA_OPTS
+exec java $JAVA_OPTS -jar /app/app.jar
