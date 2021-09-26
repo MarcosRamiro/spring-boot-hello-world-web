@@ -5,7 +5,7 @@ echo "Response from server"
 echo $result
 
 SERVER_SERVLET_CONTEXT_PATH=${SERVER_SERVLET_CONTEXT_PATH}
-
+PARAMETRO_1=$1
 printenv
 
 JAVA_OPTS="-Dserver.port=${SERVER_PORT} \
@@ -13,5 +13,6 @@ JAVA_OPTS="-Dserver.port=${SERVER_PORT} \
  -Daws.asg=${AWS_ASG} "
 
 echo $JAVA_OPTS
+echo $PARAMETRO_1
 
-exec java $JAVA_OPTS -jar /app/app.jar
+exec java $JAVA_OPTS -jar /app/app.jar $PARAMETRO_1
