@@ -1,10 +1,14 @@
 package com.marcosramiro.spring.controller;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.marcosramiro.spring.filter.CheckClientRequestFilter;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -22,7 +26,7 @@ import java.util.List;
 @RequestMapping("/java11")
 public class NovidadesJava11 {
 
-    @GetMapping(value="/var")
+    @GetMapping(value="/var", produces = MediaType.APPLICATION_JSON_VALUE)
     public String usoDoVar(){
         var lista = List.of(1,2,3,4);
         lista
@@ -58,7 +62,9 @@ public class NovidadesJava11 {
     @GetMapping("/jersey/{path}/{id}")
     public ResponseEntity<String> jersey(@PathVariable("path") String path, @PathVariable ("id") String id){
 
-        Client client = ClientBuilder.newClient();
+    	ClientConfig clientConfig = new ClientConfig();
+		clientConfig.register(CheckClientRequestFilter.class);
+        Client client = ClientBuilder.newClient(clientConfig);
 
         WebTarget target = client.target("https://swapi.dev/api");
 
@@ -66,11 +72,11 @@ public class NovidadesJava11 {
                 .path(path)
                 .path(id)
                 .request()
-                .header("Accept", "application/json")
                 .get();
 
         return ResponseEntity
                 .status(response.getStatus())
+                .contentType(MediaType.valueOf(response.getMediaType().toString()))
                 .body(response.readEntity(String.class));
 
     }
