@@ -22,10 +22,13 @@ import java.util.List;
 @RequestMapping("/java11")
 public class NovidadesJava11 {
 
-    @GetMapping("/var")
+    @GetMapping(value="/var")
     public String usoDoVar(){
         var lista = List.of(1,2,3,4);
-        lista.forEach((var e) -> System.out.println(e));
+        lista
+        .stream()
+        .filter(e -> e % 2 == 0)
+        .forEach((var e) -> System.out.println(e));
 
         return lista.toString();
     }
