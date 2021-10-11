@@ -20,66 +20,62 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.List;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/java11")
 public class NovidadesJava11 {
 
-    @GetMapping(value="/var", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String usoDoVar(){
-        var lista = List.of(1,2,3,4);
-        lista
-        .stream()
-        .filter(e -> e % 2 == 0)
-        .forEach((var e) -> System.out.println(e));
+	@GetMapping(value = "/var/{de}/{para}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String usoDoVar(@PathVariable("de") String de, @PathVariable("para") String para) {
 
-        return lista.toString();
-    }
+		Instant inicio = Instant.now();
+		LocalTime time = LocalTime.now();
+		System.out.println(time);
 
-    @GetMapping("/httpclient/{path}/{id}")
-    public ResponseEntity<String> httpClient(@PathVariable("path") String path, @PathVariable ("id") String id)
-            throws IOException, InterruptedException {
+		var lista = IntStream.range(Integer.valueOf(de), Integer.valueOf(para)).filter(e -> e % 11 == 0)
+				.collect(() -> new HashSet<>(), (l, i) -> l.add(i), (l1, l2) -> l1.addAll(l2));
+		
+		Duration duratin = Duration.between(inicio, Instant.now());
+		
+		return String.valueOf("{ \"tempo\":\"" + String.valueOf(duratin.toMillis()) + "\" , \"itens\":\""
+				+ lista.size() + "\" }");
 
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(3))
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
+	}
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://swapi.dev/api/" + path + "/" + id + "/"))
-                .GET()
-                .timeout(Duration.ofSeconds(2))
-                .build();
+	@GetMapping("/httpclient/{path}/{id}")
+	public ResponseEntity<String> httpClient(@PathVariable("path") String path, @PathVariable("id") String id)
+			throws IOException, InterruptedException {
 
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3))
+				.followRedirects(HttpClient.Redirect.NORMAL).build();
 
-        return ResponseEntity
-                .status(response.statusCode())
-                .body(response.body());
-    }
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://swapi.dev/api/" + path + "/" + id + "/"))
+				.GET().timeout(Duration.ofSeconds(2)).build();
 
-    @GetMapping("/jersey/{path}/{id}")
-    public ResponseEntity<String> jersey(@PathVariable("path") String path, @PathVariable ("id") String id){
+		var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-    	ClientConfig clientConfig = new ClientConfig();
+		return ResponseEntity.status(response.statusCode()).body(response.body());
+	}
+
+	@GetMapping("/jersey/{path}/{id}")
+	public ResponseEntity<String> jersey(@PathVariable("path") String path, @PathVariable("id") String id) {
+
+		ClientConfig clientConfig = new ClientConfig();
 		clientConfig.register(CheckClientRequestFilter.class);
-        Client client = ClientBuilder.newClient(clientConfig);
+		Client client = ClientBuilder.newClient(clientConfig);
 
-        WebTarget target = client.target("https://swapi.dev/api");
+		WebTarget target = client.target("https://swapi.dev/api");
 
-        Response response = target
-                .path(path)
-                .path(id)
-                .request()
-                .get();
+		Response response = target.path(path).path(id).request().get();
 
-        return ResponseEntity
-                .status(response.getStatus())
-                .contentType(MediaType.valueOf(response.getMediaType().toString()))
-                .body(response.readEntity(String.class));
+		return ResponseEntity.status(response.getStatus())
+				.contentType(MediaType.valueOf(response.getMediaType().toString()))
+				.body(response.readEntity(String.class));
 
-    }
-
+	}
 
 }

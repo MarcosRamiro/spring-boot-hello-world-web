@@ -10,7 +10,9 @@ printenv
 
 JAVA_OPTS="-Dserver.port=${SERVER_PORT} \
  -Dserver.servlet.context-path=/$SERVER_SERVLET_CONTEXT_PATH \
- -Daws.asg=${AWS_ASG} "
+ -Duser.timezone=America/Sao_Paulo
+ -Daws.asg=${AWS_ASG} \
+ -Xmx3072m -Xms1024m "
 
 echo $JAVA_OPTS
 echo $PARAMETRO_1
