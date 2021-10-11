@@ -2,18 +2,16 @@ package com.marcosramiro.spring.controller;
 
 import com.marcosramiro.spring.form.PDFForm;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/pdf")
@@ -30,22 +28,20 @@ public class PDFController {
     }
 
     private ResponseEntity<ByteArrayResource> preparaRetorno(String acao) throws IOException {
-
-        Path path = Paths.get("D:\\teste.txt");
-        List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-        String base64 = lines.stream().findFirst().get();
-
-        byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
-        ByteArrayResource resource = new ByteArrayResource(decoded);
-
+    	
         if(!acao.equalsIgnoreCase("imprimir") && !acao.equalsIgnoreCase("download"))
             return ResponseEntity.badRequest().build();
+        
+    	String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
+        
+    	byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
+        ByteArrayResource resource = new ByteArrayResource(decoded);
 
-        String downloadImprimir = acao.equalsIgnoreCase("imprimir") ? "inline" : "attachment";
+        String downloadOuImprimir = acao.equalsIgnoreCase("imprimir") ? "inline" : "attachment";
 
         return ResponseEntity.ok()
                 // Content-Disposition
-                .header(HttpHeaders.CONTENT_DISPOSITION, downloadImprimir + ";filename=teste.pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, downloadOuImprimir + ";filename=teste.pdf")
                 // Content-Type
                 .contentType(MediaType.APPLICATION_PDF)
                 // Contet-Length

@@ -1,8 +1,17 @@
+FROM amazoncorretto:11-alpine as build
+
+WORKDIR /workspace/app
+
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+RUN ./mvnw install -DskipTests
+
 FROM amazoncorretto:11-alpine
 
-ARG JAR_FILE=target/*.jar
-
-RUN mkdir /app
+ARG DEPENDENCY=/workspace/app/target
 
 WORKDIR /app
 
@@ -13,11 +22,11 @@ RUN apk --no-cache update && \
     update-ca-certificates && \
     rm -rf /var/cache/apk/*
 
-COPY ${JAR_FILE} app.jar
+COPY --from=build ${DEPENDENCY}/*.jar app.jar
 
 COPY entrypoint.sh entrypoint.sh
 
 EXPOSE 8080
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["ola mundo padrao"]
+CMD ["ola mundo"]

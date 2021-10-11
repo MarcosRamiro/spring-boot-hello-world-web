@@ -34,15 +34,16 @@ public class NovidadesJava11 {
 
 		Instant inicio = Instant.now();
 		LocalTime time = LocalTime.now();
+
 		System.out.println(time);
 
 		var lista = IntStream.range(Integer.valueOf(de), Integer.valueOf(para)).filter(e -> e % 11 == 0)
 				.collect(() -> new HashSet<>(), (l, i) -> l.add(i), (l1, l2) -> l1.addAll(l2));
-		
+
 		Duration duratin = Duration.between(inicio, Instant.now());
-		
-		return String.valueOf("{ \"tempo\":\"" + String.valueOf(duratin.toMillis()) + "\" , \"itens\":\""
-				+ lista.size() + "\" }");
+
+		return String.valueOf(
+				"{ \"tempo\":\"" + String.valueOf(duratin.toMillis()) + "\" , \"itens\":\"" + lista.size() + "\" }");
 
 	}
 
