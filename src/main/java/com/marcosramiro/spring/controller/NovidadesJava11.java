@@ -1,19 +1,5 @@
 package com.marcosramiro.spring.controller;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.marcosramiro.spring.filter.CheckClientRequestFilter;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,6 +10,21 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.stream.IntStream;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.marcosramiro.spring.filter.CheckClientRequestFilter;
 
 @RestController
 @RequestMapping("/java11")
@@ -69,6 +70,8 @@ public class NovidadesJava11 {
 		clientConfig.register(CheckClientRequestFilter.class);
 		Client client = ClientBuilder.newClient(clientConfig);
 
+		// wiremock
+		// WebTarget target = client.target("http://localhost:9999/api");
 		WebTarget target = client.target("https://swapi.dev/api");
 
 		Response response = target.path(path).path(id).request().get();
