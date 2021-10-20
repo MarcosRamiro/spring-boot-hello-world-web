@@ -6,7 +6,12 @@ import com.marcosramiro.spring.service.RegionService;
 
 @Service("USregionService")
 public class USRegionService implements RegionService {
-    @Override
+    
+	public USRegionService() {
+		System.out.println("Construtor GBRegionService");
+	}
+	
+	@Override
     public boolean isServerActive(int serverId) {
         return true;
     }
@@ -15,4 +20,9 @@ public class USRegionService implements RegionService {
     public String getISOCountryCode() {
         return "USA!";
     }
+    
+    @Override
+	public boolean isResponsibleFor(String isoCountryCode) {
+		return "US".equals(isoCountryCode);
+	}
 }
