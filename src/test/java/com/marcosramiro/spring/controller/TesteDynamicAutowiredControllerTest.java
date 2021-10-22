@@ -27,22 +27,18 @@ public class TesteDynamicAutowiredControllerTest {
 	
 	@Spy
 	private List<RegionService> listRegionService = new ArrayList<>();
-	
+		
 	@Mock
-	USRegionService usaRegion;
-	
-	@Mock
-	GBRegionService gbRegion;
+	RegionService region;
 	
 	@Mock
 	BeanFactoryDynamicAutowireService beanFactoryDynamicAutowireService;
 	
-
 	@Test
 	public void deveRetornaUSADeOutraService() {
 		
-		when(beanFactoryDynamicAutowireService.getBean("US")).thenReturn(usaRegion);
-		when(usaRegion.getISOCountryCode()).thenReturn("USA!");
+		when(beanFactoryDynamicAutowireService.getBean("US")).thenReturn(region);
+		when(region.getISOCountryCode()).thenReturn("USA!");
 		
 		String sayHelloAgain = testeDynamicAutowiredController.sayHello("US");
 		
@@ -54,12 +50,10 @@ public class TesteDynamicAutowiredControllerTest {
 	public void deveRetornaUSA() {
 
 		listRegionService.clear();
-		listRegionService.add(gbRegion);
-		listRegionService.add(usaRegion);
-		
-		when(gbRegion.isResponsibleFor(anyString())).thenReturn(false);
-		when(usaRegion.isResponsibleFor(anyString())).thenReturn(true);
-		when(usaRegion.getISOCountryCode()).thenReturn("USA");
+		listRegionService.add(region);
+
+		when(region.isResponsibleFor(anyString())).thenReturn(true);
+		when(region.getISOCountryCode()).thenReturn("USA");
 		
 		String sayHelloAgain = testeDynamicAutowiredController.sayHelloAgain("US");
 		
@@ -72,12 +66,10 @@ public class TesteDynamicAutowiredControllerTest {
 	public void deveRetornaReinoUnido() {
 
 		listRegionService.clear();
-		listRegionService.add(gbRegion);
-		listRegionService.add(usaRegion);
+		listRegionService.add(region);
 		
-		when(gbRegion.isResponsibleFor(anyString())).thenReturn(true);
-		when(usaRegion.isResponsibleFor(anyString())).thenReturn(false);
-		when(gbRegion.getISOCountryCode()).thenReturn("Reino Unido");
+		when(region.isResponsibleFor(anyString())).thenReturn(true);
+		when(region.getISOCountryCode()).thenReturn("Reino Unido");
 		
 		String sayHelloAgain = testeDynamicAutowiredController.sayHelloAgain("US");
 		
