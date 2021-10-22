@@ -8,7 +8,7 @@ import com.marcosramiro.spring.service.RegionService;
 public class USRegionService implements RegionService {
     
 	public USRegionService() {
-		System.out.println("Construtor GBRegionService");
+		System.out.println("Construtor USRegionService");
 	}
 	
 	@Override
