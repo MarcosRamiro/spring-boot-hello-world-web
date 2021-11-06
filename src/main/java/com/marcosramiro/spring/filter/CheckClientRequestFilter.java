@@ -13,7 +13,7 @@ public class CheckClientRequestFilter implements ClientRequestFilter {
 	public void filter(ClientRequestContext requestContext) throws IOException {
 
 		MultivaluedMap<String, Object> headers = requestContext.getHeaders();
-		
+
 		if (headers.get("Accept") == null) {
 
 			System.out.println("Não tem Accept Header. Será Incluido o Accept.");

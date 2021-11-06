@@ -10,7 +10,7 @@ RUN ./mvnw dependency:resolve
 
 COPY src src
 
-RUN ./mvnw install -DskipTests
+RUN ./mvnw package -DskipTests
 
 FROM amazoncorretto:11-alpine
 
