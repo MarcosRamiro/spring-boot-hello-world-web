@@ -1,10 +1,7 @@
 package com.marcosramiro.spring.service.impl;
 
-import org.springframework.stereotype.Service;
-
 import com.marcosramiro.spring.service.PIService;
 
-@Service
 public class PIServiceImpl implements PIService {
 
 	public double pi(int n) {
