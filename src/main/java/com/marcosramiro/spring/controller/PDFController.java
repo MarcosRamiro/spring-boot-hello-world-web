@@ -34,22 +34,27 @@ public class PDFController {
 
 	private ResponseEntity<ByteArrayResource> preparaRetorno(AcaoPDFEnum acao) throws IOException {
 
-		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
+		ByteArrayResource arquivo = obterArquivo();
 
-		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
-		ByteArrayResource resource = new ByteArrayResource(decoded);
-
-		String downloadOuImprimir = acao.getDisposition();
+		String disposition = acao.getDisposition();
 
 		return ResponseEntity.ok()
 				// Content-Disposition
-				.header(HttpHeaders.CONTENT_DISPOSITION, downloadOuImprimir + ";filename=teste.pdf")
+				.header(HttpHeaders.CONTENT_DISPOSITION, disposition + ";filename=teste.pdf")
 				// Content-Type
 				.contentType(MediaType.APPLICATION_PDF)
 				// Contet-Length
-				.contentLength(resource.contentLength()) //
-				.body(resource);
+				.contentLength(arquivo.contentLength()) //
+				.body(arquivo);
 
+	}
+
+	private ByteArrayResource obterArquivo() throws IOException {
+		
+		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
+		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
+		ByteArrayResource resource = new ByteArrayResource(decoded);
+		return resource;
 	}
 
 }
