@@ -24,37 +24,51 @@ public class PDFController {
 
 	@GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<ByteArrayResource> gerarPdfGet(@RequestParam("acao") String acao) throws IOException {
-		return preparaRetorno(Enum.valueOf(AcaoPDFEnum.class, acao.toUpperCase()));
+		
+		return prepararRetorno(obterAcao(acao));
+		
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<ByteArrayResource> gerarPdf(@RequestBody PDFForm acao) throws IOException {
-		return preparaRetorno(Enum.valueOf(AcaoPDFEnum.class, acao.getAcao().toUpperCase()));
+		
+		return prepararRetorno(obterAcao(acao.getAcao()));
+		
 	}
 
-	private ResponseEntity<ByteArrayResource> preparaRetorno(AcaoPDFEnum acao) throws IOException {
+	private ResponseEntity<ByteArrayResource> prepararRetorno(AcaoPDFEnum acao) throws IOException {
 
 		ByteArrayResource arquivo = obterArquivo();
 
-		String disposition = acao.getDisposition();
+		return geraRetorno(arquivo, acao);
+
+	}
+
+	private ByteArrayResource obterArquivo() throws IOException {
+
+		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
+		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
+		ByteArrayResource resource = new ByteArrayResource(decoded);
+		return resource;
+
+	}
+
+	private AcaoPDFEnum obterAcao(String acao) {
+
+		return Enum.valueOf(AcaoPDFEnum.class, acao.toUpperCase());
+
+	}
+
+	private ResponseEntity<ByteArrayResource> geraRetorno(ByteArrayResource arquivo, AcaoPDFEnum acao) {
 
 		return ResponseEntity.ok()
 				// Content-Disposition
-				.header(HttpHeaders.CONTENT_DISPOSITION, disposition + ";filename=teste.pdf")
+				.header(HttpHeaders.CONTENT_DISPOSITION, acao.getDisposition() + ";filename=teste.pdf")
 				// Content-Type
 				.contentType(MediaType.APPLICATION_PDF)
 				// Contet-Length
 				.contentLength(arquivo.contentLength()) //
 				.body(arquivo);
-
-	}
-
-	private ByteArrayResource obterArquivo() throws IOException {
-		
-		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
-		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
-		ByteArrayResource resource = new ByteArrayResource(decoded);
-		return resource;
 	}
 
 }
