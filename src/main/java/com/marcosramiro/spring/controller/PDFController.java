@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.marcosramiro.spring.form.PDFForm;
+import com.marcosramiro.spring.type.AcaoPDFEnum;
 
 @RestController
 @RequestMapping("/pdf")
@@ -23,25 +24,22 @@ public class PDFController {
 
 	@GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<ByteArrayResource> gerarPdfGet(@RequestParam("acao") String acao) throws IOException {
-		return preparaRetorno(acao);
+		return preparaRetorno(Enum.valueOf(AcaoPDFEnum.class, acao.toUpperCase()));
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_PDF_VALUE)
-	public ResponseEntity<ByteArrayResource> gerarPdf(@RequestBody PDFForm form) throws IOException {
-		return preparaRetorno(form.getAcao());
+	public ResponseEntity<ByteArrayResource> gerarPdf(@RequestBody PDFForm acao) throws IOException {
+		return preparaRetorno(Enum.valueOf(AcaoPDFEnum.class, acao.getAcao().toUpperCase()));
 	}
 
-	private ResponseEntity<ByteArrayResource> preparaRetorno(String acao) throws IOException {
-
-		if (!acao.equalsIgnoreCase("imprimir") && !acao.equalsIgnoreCase("download"))
-			return ResponseEntity.badRequest().build();
+	private ResponseEntity<ByteArrayResource> preparaRetorno(AcaoPDFEnum acao) throws IOException {
 
 		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
 
 		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
 		ByteArrayResource resource = new ByteArrayResource(decoded);
 
-		String downloadOuImprimir = acao.equalsIgnoreCase("imprimir") ? "inline" : "attachment";
+		String downloadOuImprimir = acao.getDisposition();
 
 		return ResponseEntity.ok()
 				// Content-Disposition
