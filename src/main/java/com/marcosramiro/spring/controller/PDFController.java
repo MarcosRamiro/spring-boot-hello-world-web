@@ -66,7 +66,7 @@ public class PDFController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, acao.getDisposition() + ";filename=teste.pdf")
 				// Content-Type
 				.contentType(MediaType.APPLICATION_PDF)
-				// Contet-Length
+				// Content-Length
 				.contentLength(arquivo.contentLength()) //
 				.body(arquivo);
 	}
