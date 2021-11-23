@@ -1,5 +1,7 @@
 package com.marcosramiro.spring.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.marcosramiro.spring.service.RegionService;
@@ -7,8 +9,10 @@ import com.marcosramiro.spring.service.RegionService;
 @Service("GBregionService")
 public class GBRegionService implements RegionService {
 	
+	private static Logger LOGGER = LoggerFactory.getLogger(USRegionService.class);
+	
 	public GBRegionService() {
-		System.out.println("Construtor GBRegionService");
+		LOGGER.info("Construtor GBRegionService");
 	}
 
 	@Override

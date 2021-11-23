@@ -1,14 +1,18 @@
 package com.marcosramiro.spring.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.marcosramiro.spring.service.RegionService;
 
 @Service("USregionService")
 public class USRegionService implements RegionService {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(USRegionService.class);
     
 	public USRegionService() {
-		System.out.println("Construtor USRegionService");
+		LOGGER.info("Construtor USRegionService");
 	}
 	
 	@Override

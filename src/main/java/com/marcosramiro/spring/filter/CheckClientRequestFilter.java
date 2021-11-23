@@ -7,8 +7,13 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CheckClientRequestFilter implements ClientRequestFilter {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(CheckClientRequestFilter.class);
+	
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
 
@@ -16,12 +21,12 @@ public class CheckClientRequestFilter implements ClientRequestFilter {
 
 		if (headers.get("Accept") == null) {
 
-			System.out.println("Não tem Accept Header. Será Incluido o Accept.");
+			LOGGER.info("Não tem Accept Header. Será Incluido o Accept.");
 			headers.add("Accept", "application/json");
 		}
 
 		if (headers.get("Password") != null) {
-			System.out.println("Possui Password no Header. Não pode.");
+			LOGGER.info("Possui Password no Header. Não pode.");
 			requestContext.abortWith(
 					Response.status(Response.Status.BAD_REQUEST).entity("Não incluir Password no header.").build());
 		}

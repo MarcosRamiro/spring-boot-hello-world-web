@@ -46,7 +46,7 @@ public class PDFController {
 
 	private ByteArrayResource obterArquivo() throws IOException {
 
-		String base64 = IOUtils.resourceToString("/teste.txt", StandardCharsets.UTF_8);
+		String base64 = IOUtils.resourceToString("/file/base64_pdf.txt", StandardCharsets.UTF_8);
 		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
 		ByteArrayResource resource = new ByteArrayResource(decoded);
 		return resource;
