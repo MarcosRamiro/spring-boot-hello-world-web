@@ -1,9 +1,14 @@
 package com.marcosramiro.spring.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,19 +43,42 @@ public class PDFController {
 
 	private ResponseEntity<ByteArrayResource> prepararRetorno(AcaoPDFEnum acao) throws IOException {
 
-		ByteArrayResource arquivo = obterArquivo();
+		ByteArrayResource arquivo = obterRecurso();
 
 		return geraRetorno(arquivo, acao);
 
 	}
 
-	private ByteArrayResource obterArquivo() throws IOException {
+	private ByteArrayResource obterRecurso() throws IOException {
 
-		String base64 = IOUtils.resourceToString("/file/base64_pdf.txt", StandardCharsets.UTF_8);
-		byte[] decoded = java.util.Base64.getMimeDecoder().decode(base64);
-		ByteArrayResource resource = new ByteArrayResource(decoded);
+		byte[] documento = obterDocumento();
+		
+		ByteArrayResource resource = new ByteArrayResource(documento);
+		
 		return resource;
 
+	}
+
+	private byte[] obterDocumento() throws IOException {
+			
+		String base64 = IOUtils.resourceToString("/file/base64_pdf.txt", StandardCharsets.UTF_8);
+		
+		PDDocument doc = PDDocument.load(java.util.Base64.getMimeDecoder().decode(base64));
+		
+		PDDocumentInformation info = new PDDocumentInformation();
+		info.setAuthor("Autor:: Marcos Ramiro dos Santos");
+		info.setTitle("Esse é o titulo legal!!");
+		info.setSubject("Esse é o assunto bom....");
+		info.setCreator("Criador:: Ramiro");
+		
+		doc.setDocumentInformation(info);
+		
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		doc.save(byteArrayOutputStream);
+		doc.close();
+		
+		InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+		return inputStream.readAllBytes();
 	}
 
 	private AcaoPDFEnum obterAcao(String acao) {
