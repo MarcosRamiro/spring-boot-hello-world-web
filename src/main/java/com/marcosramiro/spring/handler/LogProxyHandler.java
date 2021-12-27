@@ -27,7 +27,7 @@ public class LogProxyHandler implements InvocationHandler  {
 		Object result = method.invoke(target, args);
 		long elapsed = System.currentTimeMillis() - start;
 		
-		LOGGER.info("{}.{} - args: {} - tempo: {} ms", target.getClass().getSimpleName(), method.getName(), elapsed);
+		LOGGER.info("{}.{} - tempo: {} ms", target.getClass().getSimpleName(), method.getName(), elapsed);
 
 		return result;
 	}

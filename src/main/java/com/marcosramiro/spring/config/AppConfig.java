@@ -34,31 +34,4 @@ public class AppConfig {
 		return proxyInstance;
 	}
 
-	@Bean
-	public KafkaProducer<String, String> getKafkaProducer() {
-
-		LOGGER.info("Create Bean: KafkaProducer<String, String>");
-
-		Properties config = obterKafkaProducerProperties();
-		
-
-		return new KafkaProducer<>(config);
-
-	}
-
-	private Properties obterKafkaProducerProperties() {
-
-		Properties config = new Properties();
-
-		config.put(ProducerConfig.CLIENT_ID_CONFIG, "Spring-Boot-Hello-World-Web");
-		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-1:29092");
-		config.put(ProducerConfig.ACKS_CONFIG, "all");
-		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		
-		return config;
-	}
-	
-	
-
 }

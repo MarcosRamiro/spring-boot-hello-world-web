@@ -60,7 +60,7 @@ kafka-console-producer --bootstrap-server kafka-1:9092 --topic first_topic --req
 
 kafka-console-consumer --bootstrap-server kafka-1:9092 --topic first_topic --from-beginning --group my-new-app
 
-kafka-console-consumer --bootstrap-server kafka-1:9092 --topic first_topic --group my-new-app
+kafka-console-consumer --bootstrap-server kafka-1:9092 --topic first_topic --group my-new-app --from-beginning
 
 kafka-console-consumer --bootstrap-server kafka-1:9092 --topic first_topic --partition 0 --from-beginning
 
