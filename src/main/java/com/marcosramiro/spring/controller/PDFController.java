@@ -28,38 +28,38 @@ import com.marcosramiro.spring.type.AcaoPDFEnum;
 public class PDFController {
 
 	@GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
-	public ResponseEntity<ByteArrayResource> gerarPdfGet(@RequestParam("acao") String acao) throws IOException {
+	public ResponseEntity<ByteArrayResource> gerarPdfGet(@RequestParam("acao") String requestAcao) throws IOException {
 		
-		return prepararRetorno(obterAcao(acao));
+		return tratarRequisicao(definirTipoDeAcao(requestAcao));
 		
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_PDF_VALUE)
-	public ResponseEntity<ByteArrayResource> gerarPdf(@RequestBody PDFForm acao) throws IOException {
+	public ResponseEntity<ByteArrayResource> gerarPdf(@RequestBody PDFForm requestAcao) throws IOException {
 		
-		return prepararRetorno(obterAcao(acao.getAcao()));
+		return tratarRequisicao(definirTipoDeAcao(requestAcao.getAcao()));
 		
 	}
 
-	private ResponseEntity<ByteArrayResource> prepararRetorno(AcaoPDFEnum acao) throws IOException {
+	private ResponseEntity<ByteArrayResource> tratarRequisicao(AcaoPDFEnum acao) throws IOException {
 
-		ByteArrayResource arquivo = obterRecurso();
+		ByteArrayResource arquivo = obterArquivo();
 
-		return geraRetorno(arquivo, acao);
+		return prepararRetorno(arquivo, acao.getDisposition());
 
 	}
 
-	private ByteArrayResource obterRecurso() throws IOException {
+	private ByteArrayResource obterArquivo() throws IOException {
 
-		byte[] documento = obterDocumento();
+		InputStream recurso = obterRecurso();
 		
-		ByteArrayResource resource = new ByteArrayResource(documento);
+		ByteArrayResource resource = new ByteArrayResource(recurso.readAllBytes());
 		
 		return resource;
 
 	}
 
-	private byte[] obterDocumento() throws IOException {
+	private InputStream obterRecurso() throws IOException {
 			
 		String base64 = IOUtils.resourceToString("/file/base64_pdf.txt", StandardCharsets.UTF_8);
 		
@@ -78,25 +78,25 @@ public class PDFController {
 		doc.close();
 		
 		InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-		return inputStream.readAllBytes();
+		return inputStream;
 	}
 
-	private AcaoPDFEnum obterAcao(String acao) {
+	private AcaoPDFEnum definirTipoDeAcao(String acao) {
 
 		return Enum.valueOf(AcaoPDFEnum.class, acao.toUpperCase());
 
 	}
 
-	private ResponseEntity<ByteArrayResource> geraRetorno(ByteArrayResource arquivo, AcaoPDFEnum acao) {
+	private ResponseEntity<ByteArrayResource> prepararRetorno(ByteArrayResource arquivo, String disposition) {
 
 		return ResponseEntity.ok()
 				// Content-Disposition
-				.header(HttpHeaders.CONTENT_DISPOSITION, acao.getDisposition() + ";filename=teste.pdf")
+				.header(HttpHeaders.CONTENT_DISPOSITION, disposition + ";filename=teste.pdf")
 				// Content-Type
 				.contentType(MediaType.APPLICATION_PDF)
 				// Content-Length
 				.contentLength(arquivo.contentLength()) //
 				.body(arquivo);
 	}
-
+	
 }
