@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.ws.rs.client.Client;
@@ -33,14 +34,14 @@ import com.marcosramiro.spring.filter.CheckClientRequestFilter;
 public class NovidadesJava11 {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(NovidadesJava11.class);
-	
+
 	@GetMapping(value = "/var/{de}/{para}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String usoDoVar(@PathVariable("de") String de, @PathVariable("para") String para) {
 
 		Instant inicio = Instant.now();
 		LocalTime time = LocalTime.now();
 
-		LOGGER.info("LocalTime.now() --> {}",time);
+		LOGGER.info("LocalTime.now() --> {}", time);
 
 		var lista = IntStream.range(Integer.valueOf(de), Integer.valueOf(para)).filter(e -> e % 11 == 0)
 				.collect(() -> new HashSet<>(), (l, i) -> l.add(i), (l1, l2) -> l1.addAll(l2));
@@ -83,6 +84,23 @@ public class NovidadesJava11 {
 		return ResponseEntity.status(response.getStatus())
 				.contentType(MediaType.valueOf(response.getMediaType().toString()))
 				.body(response.readEntity(String.class));
+
+	}
+
+	@GetMapping("/stream")
+	public ResponseEntity<String> stream() {
+
+		List<String> lista = List.of("Olá", "Mundo", "Legal", "Marcos Ramiro");
+
+		lista.stream()
+		.filter(s -> {
+			System.out.println("passou aqui no filter");
+			return s.length() > 3;
+		})
+		.findFirst()
+		.orElse("nada");
+
+		return ResponseEntity.ok().body("");
 
 	}
 
