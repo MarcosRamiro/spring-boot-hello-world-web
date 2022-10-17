@@ -1,5 +1,7 @@
 package com.marcosramiro.spring.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +18,10 @@ public class PIController {
 	PIService piService;
 	
 	@GetMapping("/{numero}")
-	public String calculoDoPI(@PathVariable("numero") String numero) {
+	public String calculoDoPI(@PathVariable("numero") String numero, HttpServletRequest request) {
 		
-		return String.format("%f", piService.pi(Integer.valueOf(numero)));
+		System.out.println(request.getRequestURL().toString());
+		return String.format("%f - %s", piService.pi(Integer.valueOf(numero)), request.getLocalName());
 		
 	}
 

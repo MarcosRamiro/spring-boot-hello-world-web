@@ -81,7 +81,8 @@ public class NovidadesJava11 {
 
 		Response response = target.path(path).path(id).request().get();
 
-		return ResponseEntity.status(response.getStatus())
+		return ResponseEntity
+				.status(response.getStatus())
 				.contentType(MediaType.valueOf(response.getMediaType().toString()))
 				.body(response.readEntity(String.class));
 
@@ -92,15 +93,12 @@ public class NovidadesJava11 {
 
 		List<String> lista = List.of("Olá", "Mundo", "Legal", "Marcos Ramiro");
 
-		lista.stream()
-		.filter(s -> {
-			System.out.println("passou aqui no filter");
-			return s.length() > 3;
-		})
-		.findFirst()
-		.orElse("nada");
+		final String s1 = lista.stream()
+							.filter(s -> s.length() > 3)
+							.findFirst()
+							.orElse("nada");
 
-		return ResponseEntity.ok().body("");
+		return ResponseEntity.ok().body(s1);
 
 	}
 
